@@ -1,9 +1,80 @@
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getProductById } from '../data/products'
+import { getItemById } from '../services/items'
 
 function ProductDetailView() {
   const { itemId } = useParams()
-  const product = getProductById(itemId)
+  const [product, setProduct] = useState(null)
+  const [status, setStatus] = useState({
+    loading: true,
+    error: '',
+  })
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadItem = async () => {
+      setStatus({
+        loading: true,
+        error: '',
+      })
+
+      try {
+        const item = await getItemById(itemId)
+
+        if (!isMounted) {
+          return
+        }
+
+        setProduct(item)
+        setStatus({
+          loading: false,
+          error: '',
+        })
+      } catch (error) {
+        if (!isMounted) {
+          return
+        }
+
+        setProduct(null)
+        setStatus({
+          loading: false,
+          error:
+            error.message ??
+            'No se pudo cargar el detalle del producto desde Firestore.',
+        })
+      }
+    }
+
+    loadItem()
+
+    return () => {
+      isMounted = false
+    }
+  }, [itemId])
+
+  if (status.loading) {
+    return (
+      <section className="view view--compact">
+        <span className="eyebrow">Detalle</span>
+        <h1>Cargando producto</h1>
+        <p className="lead">Estamos consultando Firestore para traer este item.</p>
+      </section>
+    )
+  }
+
+  if (status.error) {
+    return (
+      <section className="view view--compact">
+        <span className="eyebrow">Detalle</span>
+        <h1>No pudimos cargar el producto</h1>
+        <p className="lead">{status.error}</p>
+        <Link className="button" to="/">
+          Volver al catalogo
+        </Link>
+      </section>
+    )
+  }
 
   if (!product) {
     return (
@@ -11,7 +82,7 @@ function ProductDetailView() {
         <span className="eyebrow">Detalle</span>
         <h1>Producto no encontrado</h1>
         <p className="lead">
-          El identificador `{itemId}` no coincide con ningun producto del catalogo base.
+          El identificador `{itemId}` no coincide con ningun producto de la coleccion `items`.
         </p>
         <Link className="button" to="/">
           Volver al catalogo
