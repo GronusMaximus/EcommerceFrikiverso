@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { useCart } from '../../context/CartContext'
 
 const navLinkClassName = ({ isActive }) =>
   isActive ? 'nav__link nav__link--active' : 'nav__link'
 
 function NavBar() {
   const navigate = useNavigate()
+  const { distinctItemsCount } = useCart()
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSubmit = (event) => {
@@ -74,6 +76,9 @@ function NavBar() {
                 fill="currentColor"
               />
             </svg>
+            {distinctItemsCount > 0 ? (
+              <span className="cart-link__badge">{distinctItemsCount}</span>
+            ) : null}
           </NavLink>
         </nav>
       </div>

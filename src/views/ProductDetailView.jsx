@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
+import { useCart } from '../context/CartContext'
 import { getItemById } from '../services/items'
 
 function ProductDetailView() {
   const { itemId } = useParams()
   const location = useLocation()
+  const { addItem } = useCart()
   const [product, setProduct] = useState(null)
   const [status, setStatus] = useState({
     loading: true,
@@ -124,7 +126,7 @@ function ProductDetailView() {
           </div>
 
           <div className="detail-card__actions">
-            <button className="button" type="button">
+            <button className="button" type="button" onClick={() => addItem(product)}>
               Agregar al carrito
             </button>
             <Link className="button button--ghost" to="/cart">
