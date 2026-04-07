@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { getItemById } from '../services/items'
 
 function ProductDetailView() {
   const { itemId } = useParams()
+  const location = useLocation()
   const [product, setProduct] = useState(null)
   const [status, setStatus] = useState({
     loading: true,
@@ -41,7 +42,7 @@ function ProductDetailView() {
           loading: false,
           error:
             error.message ??
-            'No se pudo cargar el detalle del producto desde Firestore.',
+            'No se pudo cargar el detalle del producto desde la base de datos.',
         })
       }
     }
@@ -91,10 +92,13 @@ function ProductDetailView() {
     )
   }
 
+  const backLink = location.state?.returnTo ?? '/'
+  const backLabel = location.state?.returnLabel ?? 'Volver al catalogo'
+
   return (
     <section className="view">
-      <Link className="back-link" to={`/category/${product.category}`}>
-        Volver a {product.categoryLabel}
+      <Link className="back-link" to={backLink}>
+        {backLabel}
       </Link>
 
       <article className="detail-card">
