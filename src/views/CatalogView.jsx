@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import ProductCard from '../components/catalog/ProductCard'
 import { formatCategoryLabel, getCategories, getItems } from '../services/items'
 
@@ -110,9 +110,6 @@ function CatalogView() {
         </div>
 
         <div className="hero-panel__actions">
-          <Link className="button" to="/cart">
-            Ir al carrito
-          </Link>
           <label className="category-dropdown">
             <span>Filtrar por categoria</span>
             <select value={categoryId ?? ''} onChange={handleCategoryChange}>
